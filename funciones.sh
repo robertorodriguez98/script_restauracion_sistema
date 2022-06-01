@@ -124,12 +124,23 @@ while [ $Wh9 -eq 1 ]; do
                 sleep 1
                 mount /dev/sda6 /mnt
                 find /mnt/* -maxdepth 1 -type d | egrep -v "/mnt/(usuario|lost+found)" | xargs rm -rfd
-                rm -r /mnt/usuario/*/*
-                find /mnt/usuario/* -maxdepth 1 -type d | egrep -v "/mnt/usuario/(Descargas|Documentos|Imágenes|Escritorio|Música|Plantillas|Público|Vídeos)" | xargs rm -rf
-                rm -rdf /mnt/usuario/.*
+                rm -rf /mnt/usuario/*/*
+                find /mnt/usuario/* -maxdepth 0 | egrep -v "/mnt/usuario/(Descargas|Documentos|Imágenes|Escritorio|Música|Plantillas|Público|Vídeos)" | xargs rm -rf
+
+                rm -rdf /mnt/usuario/.* 2&> /dev/null
                 echo "" > /mnt/usuario/.bash_history
+                umount /mnt
                 echo "Particion /home limpia"
                 sleep 1
+                read -p "¿Desea continuar con la recuperación? [S/n]: " Pr10
+                case $Pr10 in
+                N | n)
+                    NO
+                    ;;
+                S | s)
+                    Wh10=1
+                    ;;
+                esac
                 ;;
             N | n)
                 NO
