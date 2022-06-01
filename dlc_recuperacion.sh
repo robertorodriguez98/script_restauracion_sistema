@@ -35,6 +35,8 @@ while [ $Wh6 -eq 1 ]; do
             echo ""
             echo "<1> Debian 11"
             echo "<2> Windows 10"
+            echo "Adicionalmente puedes limpiar la partición /home de debian:"
+            echo "<3> Limpiar /home"
             echo ""
             read -p "> " Pr5
             case $Pr5 in
@@ -53,21 +55,8 @@ while [ $Wh6 -eq 1 ]; do
                             case $Pr3 in
                             S | s)
                                 partclone.ext4 -r -d -s /home/particion/debian_raiz.img -o /dev/sda5
-				partclone.ext4 -r -d -s /home/particion/debian_var.img -o /dev/sda
+				partclone.ext4 -r -d -s /home/particion/debian_var.img -o /dev/sda7
                                 echo "Recuperacion completada"
-                                read -p "¿Quieres limpiar la partición /home? [S/n]" Pr4
-                                case $Pr4 in
-                                S | s)
-                                    echo "Limpiando particion /home"
-                                    sleep 1
-                                    rm -r /home/usuario/*/*
-                                    echo "Particion /home limpia"
-                                    sleep 1
-                                    ;;
-                                N | n)
-                                    NO
-                                    ;;
-                                esac
                                 reboot
                                 ;;
                             N | n)
@@ -127,6 +116,53 @@ while [ $Wh6 -eq 1 ]; do
                         echo "Argumento invalido"
                         sleep 1
                         Wh7=1
+                        ;;
+                    esac
+                done
+                ;;
+            3)
+                Wh9=1
+                while [ $Wh9 -eq 1 ]; do
+                    Wh9=0
+                    echo "Estas a punto de limpiar la particion /home"
+                    read -p "¿Quieres limpiar la particion /home? [S/n]: " Pr9
+                    case $Pr9 in
+                    S | s)
+                        Wh10=1
+                        while [ $Wh10 -eq 1 ]; do
+                            Wh10=0
+                            read -p "Estas seguro? [S/n]: " Pr10
+                            case $Pr10 in
+                            S | s)
+                                echo "Limpiando particion /home"
+                                sleep 1
+                                mount /dev/sda6 /mnt
+                                find /mnt/* -maxdepth 1 -type d | egrep -v "/mnt/(usuario|lost+found)" | xargs rm -rfd
+                                rm -r /mnt/usuario/*/*
+                                find /mnt/usuario/* -maxdepth 1 -type d | egrep -v "/mnt/usuario/(Descargas|Documentos|Imágenes|Escritorio|Música|Plantillas|Público|Vídeos)" | xargs rm -rf
+                                rm -rdf /mnt/usuario/.*
+                                echo "" > /mnt/usuario/.bash_history
+                                echo "Particion /home limpia"
+                                sleep 1
+                                ;;
+                            N | n)
+                                NO
+                                ;;
+                            *)
+                                echo "Argumento invalido"
+                                sleep 1
+                                Wh10=1
+                                ;;
+                            esac
+                        done
+                        ;;
+                    N | n)
+                        NO
+                        ;;
+                    *)
+                        echo "Argumento invalido"
+                        sleep 1
+                        Wh9=1
                         ;;
                     esac
                 done
