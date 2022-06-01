@@ -53,7 +53,21 @@ while [ $Wh6 -eq 1 ]; do
                             case $Pr3 in
                             S | s)
                                 partclone.ext4 -r -d -s /home/particion/debian_raiz.img -o /dev/sda5
-				partclone.ext4 -r -d -s /home/particion/debian_var.img -o /dev/sda7
+				partclone.ext4 -r -d -s /home/particion/debian_var.img -o /dev/sda
+                                echo "Recuperacion completada"
+                                read -p "¿Quieres limpiar la partición /home? [S/n]" Pr4
+                                case $Pr4 in
+                                S | s)
+                                    echo "Limpiando particion /home"
+                                    sleep 1
+                                    rm -r /home/usuario/*/*
+                                    echo "Particion /home limpia"
+                                    sleep 1
+                                    ;;
+                                N | n)
+                                    NO
+                                    ;;
+                                esac
                                 reboot
                                 ;;
                             N | n)
